@@ -1,0 +1,15 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/Fixtures.html
+
+one:
+  name: MyString
+  number_of_rooms: 1
+  latitude: 
+  longitude: 
+  is_available: false
+
+two:
+  name: MyString
+  number_of_rooms: 1
+  latitude: 
+  longitude: 
+  is_available: false
