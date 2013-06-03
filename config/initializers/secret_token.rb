@@ -4,4 +4,4 @@
 # If you change this key, all old signed cookies will become invalid!
 # Make sure the secret is at least 30 characters and all random,
 # no regular words or you'll be exposed to dictionary attacks.
-Rentify2::Application.config.secret_token = '14f066e1df0e70f8b35326d680a232003923620f1308b13787a93671ecd02c3cddb16fc8dc75d7a17baf8e33def88583e5887a763b3659c9f61d8962c426cd12'
+Rentify2::Application.config.secret_token = 'fb14b96db6c3e3e9922771ddaf804ed327f266b37287e928bc52628548f8dd30f956e75ad58519db367d8071ff8c7efcbf9e8d0a94ba5184658a1217df8c82ac'
