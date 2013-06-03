@@ -20,10 +20,10 @@ class SimilarPropertiesFinder
     @properties.select! { |property| property.number_of_rooms >= @number_of_rooms}
   end
   def filter_by_distance
-    @properties.select! { |property| @point.distance_to(property) <= 20}
+    @properties.select! { |property| @point.distance_to(property.location) <= 20}
   end
   def sort_by_distance
-    @properties.sort! { |property1, property2| @point.distance_to(property1.point) <=> @point.distance_to(property2.point)}
+    @properties.sort! { |property1, property2| @point.distance_to(property1.location) <=> @point.distance_to(property2.location)}
   end
 end
 
