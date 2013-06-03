@@ -1,0 +1,10 @@
+<%= form_tag url_for(:controller=>:properties, :action=>:search), :method => 'get' do %>
+    <table>
+      <tr><td>Number of rooms</td><td> <%= text_field_tag :number_of_rooms, params[:number_of_rooms] %></td></tr>
+      <tr><td>Latitude</td><td><%= text_field_tag :latitude, params[:latitude] %>  </td></tr>
+      <tr><td>Longitude</td><td><%= text_field_tag :longitude, params[:longitude] %></td></tr>
+      <tr><td><%= submit_tag "Search", :name => nil %>
+    </table>
+<% end %>
+
+<%= link_to 'test', url_for(:controller=>:properties, :action=>:search, :number_of_rooms=>2, :latitude=>51.501000, :longitude=>-0.142000) %>

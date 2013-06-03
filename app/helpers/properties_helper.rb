@@ -2,29 +2,37 @@ module PropertiesHelper
 end
 
 class SimilarPropertiesFinder
-  def initialize(number_of_rooms, point)
-    @number_of_rooms = number_of_rooms
-    @point = point
+
+  def initialize(params)
+    @number_of_rooms = params[:number_of_rooms].to_i
+    @point = Point.new(params[:latitude].to_f,params[:longitude].to_f)
   end
+
   def run
     filter_by_number_of_rooms
     filter_by_distance
     sort_by_distance
     @properties
   end
-  def setPropertyList(list)
+
+  def set_property_list(list)
     @properties = list
   end
+
   private
+
   def filter_by_number_of_rooms
     @properties.select! { |property| property.number_of_rooms >= @number_of_rooms}
   end
+
   def filter_by_distance
     @properties.select! { |property| @point.distance_to(property.location) <= 20}
   end
+
   def sort_by_distance
     @properties.sort! { |property1, property2| @point.distance_to(property1.location) <=> @point.distance_to(property2.location)}
   end
+
 end
 
 class Point
@@ -34,22 +42,25 @@ class Point
     @longitude=longitude
   end
   def distance_to(point)
-    haversine(point.latitude, point.longitude)
+    haversine_distance(point.latitude, point.longitude)
   end
-  def haversine(destination_lat, destination_long)
+
+  private
+
+  def haversine_distance(destination_lat, destination_long)
     #Got from http://www.movable-type.co.uk/scripts/latlong.html
     radius = 6371;
-    dLat = radians(destination_lat-@latitude);
-    dLon = radians(destination_long-@longitude);
-    lat1 = radians(@latitude);
-    lat2 = radians(destination_lat);
+    deltaLatitude = degrees_to_radians(destination_lat-@latitude);
+    deltaLongitude = degrees_to_radians(destination_long-@longitude);
+    latitude_origin = degrees_to_radians(@latitude);
+    latitude_destination = degrees_to_radians(destination_lat);
 
-    a = Math.sin(dLat/2) * Math.sin(dLat/2) +
-        Math.sin(dLon/2) * Math.sin(dLon/2) * Math.cos(lat1) * Math.cos(lat2);
+    a = Math.sin(deltaLatitude/2) * Math.sin(deltaLatitude/2) +
+        Math.sin(deltaLongitude/2) * Math.sin(deltaLongitude/2) * Math.cos(latitude_origin) * Math.cos(latitude_destination);
     c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
     distance = radius * c;
   end
-  def radians(degrees)
+  def degrees_to_radians(degrees)
     degrees * Math::PI / 180
   end
 

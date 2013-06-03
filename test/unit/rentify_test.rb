@@ -15,7 +15,7 @@ class RentifyTest < ActiveSupport::TestCase
 
   def setup
     @origin = Point.new(LAT, LONG)
-    @rentify = SimilarPropertiesFinder.new(NUMBER_OF_BEDROOMS, @origin)
+    @rentify = SimilarPropertiesFinder.new({:number_of_rooms=>NUMBER_OF_BEDROOMS, :point=>@origin})
 
     @close_property = Property.new({:name=>'Close Property',:number_of_rooms=>NUMBER_OF_BEDROOMS, :latitude=>LAT_LESS_1KM, :longitude=>LONG});
     @further_property = Property.new({:name=>'Further Property',:number_of_rooms=>NUMBER_OF_BEDROOMS, :latitude=>LAT_3KM, :longitude=>LONG})
@@ -25,7 +25,7 @@ class RentifyTest < ActiveSupport::TestCase
     @origin_property = Property.new({:name=>'Origin Property',:number_of_rooms=>NUMBER_OF_BEDROOMS, :latitude=>LAT, :longitude=>LONG})
     fixture_properties = [@origin_property]
     expected_list      = [@origin_property]
-    @rentify.setPropertyList(fixture_properties)
+    @rentify.set_property_list(fixture_properties)
 
     list = @rentify.run()
 
@@ -35,7 +35,7 @@ class RentifyTest < ActiveSupport::TestCase
   def test_order_by_distance
     fixture_properties = [@further_property,@close_property]
     expected_list      = [@close_property,@further_property]
-    @rentify.setPropertyList(fixture_properties)
+    @rentify.set_property_list(fixture_properties)
 
     list = @rentify.run()
 
@@ -45,7 +45,7 @@ class RentifyTest < ActiveSupport::TestCase
   def test_do_not_reorder_by_distance_if_already_ordered
     fixture_properties = [@close_property,@further_property]
     expected_list      = [@close_property,@further_property]
-    @rentify.setPropertyList(fixture_properties)
+    @rentify.set_property_list(fixture_properties)
 
     list = @rentify.run()
 
@@ -56,7 +56,7 @@ class RentifyTest < ActiveSupport::TestCase
     @smaller_property = Property.new({:name=>'Smaller Property', :number_of_rooms=>LARGE_NUMBER_OF_BEDROOMS, :latitude=>LAT_LESS_1KM, :longitude=>LONG});
     fixture_properties = [@smaller_property]
     expected_list      = []
-    @rentify.setPropertyList(fixture_properties)
+    @rentify.set_property_list(fixture_properties)
 
     list = @rentify.run()
 
@@ -68,7 +68,7 @@ class RentifyTest < ActiveSupport::TestCase
 
     fixture_properties = [@bigger_property]
     expected_list      = [@bigger_property]
-    @rentify.setPropertyList(fixture_properties)
+    @rentify.set_property_list(fixture_properties)
 
     list = @rentify.run()
 
@@ -79,7 +79,7 @@ class RentifyTest < ActiveSupport::TestCase
     @far_property = Property.new({:name=>'Far Property',:number_of_rooms=>NUMBER_OF_BEDROOMS, :latitude=>LAT_OVER_20KM, :longitude=>LONG})
     fixture_properties = [@far_property]
     expected_list      = []
-    @rentify.setPropertyList(fixture_properties)
+    @rentify.set_property_list(fixture_properties)
 
     list = @rentify.run()
 

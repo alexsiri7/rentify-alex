@@ -10,6 +10,23 @@ class PropertiesController < ApplicationController
     end
   end
 
+  def search_form
+  end
+
+  def search
+    all_properties = Property.all
+    finder = SimilarPropertiesFinder.new(params)
+    finder.set_property_list(all_properties)
+    @properties = finder.run()
+    @origin =  Point.new(params[:latitude].to_f,params[:longitude].to_f)
+
+
+    respond_to do |format|
+      format.html
+      format.json { render json: @properties }
+    end
+  end
+
   # GET /properties/1
   # GET /properties/1.json
   def show
