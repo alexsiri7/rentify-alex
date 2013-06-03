@@ -1,10 +1,13 @@
 class Property < ActiveRecord::Base
   attr_accessible :is_available, :latitude, :longitude, :name, :number_of_rooms
+  def point
+    Point.new(latitude, longitude)
+  end
   def ==(obj)
-    @name==obj.name
+    name==obj.name
   end
 
   def to_s
-    @name
+    name
   end
 end

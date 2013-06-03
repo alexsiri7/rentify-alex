@@ -90,16 +90,16 @@ class RentifyTest < ActiveSupport::TestCase
   end
 
   def test_calculate_distance_latitude
-    distance = @rentify.distance_to(LAT, LONG, @close_property_latitude)
+    distance = Point.new(LAT, LONG).distance_to(@close_property_latitude.point)
     assert_in_delta 3, distance, 0.01
   end
   def test_calculate_distance_longitude
-    distance = @rentify.distance_to(LAT, LONG, @close_property_longitude)
+    distance = Point.new(LAT, LONG).distance_to(@close_property_longitude.point)
     assert_in_delta 4, distance, 0.01
   end
 
   def test_calculate_distance_diagonal
-    distance = @rentify.distance_to(LAT, LONG, @close_property_diagonal)
+    distance = Point.new(LAT, LONG).distance_to(@close_property_diagonal.point)
     assert_in_delta 5, distance, 0.01 #Trigonometry, baby!
   end
 
