@@ -17,100 +17,73 @@ class RentifyTest < ActiveSupport::TestCase
 
   def setup
     @rentify = Rentify.new
+    @origin = Point.new(LAT, LONG)
 
-    @original_property = Property.new({:name=>'Original Property',:number_of_rooms=>NUMBER_OF_BEDROOMS, :latitude=>LAT, :longitude=>LONG})
     @close_property = Property.new({:name=>'Close Property',:number_of_rooms=>NUMBER_OF_BEDROOMS, :latitude=>LAT_100M, :longitude=>LONG});
     @further_property = Property.new({:name=>'Further Property',:number_of_rooms=>NUMBER_OF_BEDROOMS, :latitude=>LAT_3KM, :longitude=>LONG})
-    @far_property = Property.new({:name=>'Further Property',:number_of_rooms=>NUMBER_OF_BEDROOMS, :latitude=>LAT_OVER_20KM, :longitude=>LONG})
-
-    @bigger_property = Property.new({:name=>'Bigger Property', :number_of_rooms=>SMALL_NUMBER_OF_BEDROOMS, :latitude=>LAT_100M, :longitude=>LONG});
-    @smaller_property = Property.new({:name=>'Smaller Property', :number_of_rooms=>LARGE_NUMBER_OF_BEDROOMS, :latitude=>LAT_100M, :longitude=>LONG});
-
-    @close_property_latitude = Property.new({:name=>'Close Property',:number_of_rooms=>NUMBER_OF_BEDROOMS, :latitude=>LAT_3KM, :longitude=>LONG});
-    @close_property_longitude = Property.new({:name=>'Close Property',:number_of_rooms=>NUMBER_OF_BEDROOMS, :latitude=>LAT, :longitude=>LONG_4KM});
-    @close_property_diagonal = Property.new({:name=>'Close Property',:number_of_rooms=>NUMBER_OF_BEDROOMS, :latitude=>LAT_3KM, :longitude=>LONG_4KM});
   end
 
   def test_find_same_property
-    expected_list = [@original_property]
+    @origin_property = Property.new({:name=>'Origin Property',:number_of_rooms=>NUMBER_OF_BEDROOMS, :latitude=>LAT, :longitude=>LONG})
+    expected_list = [@origin_property]
     @rentify.setPropertyList(expected_list)
-    list = @rentify.searchSimilarProperties(NUMBER_OF_BEDROOMS, LAT, LONG)
+
+    list = @rentify.searchSimilarProperties(NUMBER_OF_BEDROOMS, @origin)
+
     assert_equal expected_list,list
   end
 
   def test_order_by_distance
-    fixture_properties = [
-        @further_property,
-        @close_property
-    ]
-    expected_list = [
-        @close_property,
-        @further_property
-    ]
+    fixture_properties = [@further_property,@close_property]
+    expected_list = [@close_property,@further_property]
     @rentify.setPropertyList(fixture_properties)
-    list = @rentify.searchSimilarProperties(NUMBER_OF_BEDROOMS, LAT, LONG)
+
+    list = @rentify.searchSimilarProperties(NUMBER_OF_BEDROOMS, @origin)
+
     assert_equal expected_list,list
   end
 
   def test_do_not_reorder_by_distance_if_already_ordered
-    fixture_properties = [
-        @close_property,
-        @further_property
-    ]
-    expected_list = [
-        @close_property,
-        @further_property
-    ]
+    fixture_properties = [@close_property,@further_property]
+    expected_list = [@close_property,@further_property]
     @rentify.setPropertyList(fixture_properties)
-    list = @rentify.searchSimilarProperties(NUMBER_OF_BEDROOMS, LAT, LONG)
+
+    list = @rentify.searchSimilarProperties(NUMBER_OF_BEDROOMS, @origin)
+
     assert_equal expected_list,list
   end
 
   def test_filter_out_if_lesser_number_of_bedrooms
-    fixture_properties = [
-        @smaller_property
-    ]
-    expected_list = [
-    ]
+    @smaller_property = Property.new({:name=>'Smaller Property', :number_of_rooms=>LARGE_NUMBER_OF_BEDROOMS, :latitude=>LAT_100M, :longitude=>LONG});
+    fixture_properties = [@smaller_property]
+    expected_list = []
     @rentify.setPropertyList(fixture_properties)
-    list = @rentify.searchSimilarProperties(NUMBER_OF_BEDROOMS, LAT, LONG)
+
+    list = @rentify.searchSimilarProperties(NUMBER_OF_BEDROOMS, @origin)
+
     assert_equal expected_list,list
   end
 
   def test_filter_in_if_greater_number_of_bedrooms
-    fixture_properties = [
-        @bigger_property
-    ]
-    expected_list = [
-        @bigger_property
-    ]
+    @bigger_property = Property.new({:name=>'Bigger Property', :number_of_rooms=>SMALL_NUMBER_OF_BEDROOMS, :latitude=>LAT_100M, :longitude=>LONG});
+
+    fixture_properties = [@bigger_property]
+    expected_list      = [@bigger_property]
     @rentify.setPropertyList(fixture_properties)
-    list = @rentify.searchSimilarProperties(NUMBER_OF_BEDROOMS, LAT, LONG)
+
+    list = @rentify.searchSimilarProperties(NUMBER_OF_BEDROOMS, @origin)
+
     assert_equal expected_list,list
   end
 
-  def test_calculate_distance_latitude
-    distance = Point.new(LAT, LONG).distance_to(@close_property_latitude.point)
-    assert_in_delta 3, distance, 0.01
-  end
-  def test_calculate_distance_longitude
-    distance = Point.new(LAT, LONG).distance_to(@close_property_longitude.point)
-    assert_in_delta 4, distance, 0.01
-  end
-
-  def test_calculate_distance_diagonal
-    distance = Point.new(LAT, LONG).distance_to(@close_property_diagonal.point)
-    assert_in_delta 5, distance, 0.01 #Trigonometry, baby!
-  end
-
   def test_filter_by_distance
-    fixture_properties = [
-        @far_property
-    ]
-    expected_list = [
-    ]
+    @far_property = Property.new({:name=>'Further Property',:number_of_rooms=>NUMBER_OF_BEDROOMS, :latitude=>LAT_OVER_20KM, :longitude=>LONG})
+    fixture_properties = [@far_property]
+    expected_list      = []
     @rentify.setPropertyList(fixture_properties)
-    list = @rentify.searchSimilarProperties(NUMBER_OF_BEDROOMS, LAT, LONG)
+
+    list = @rentify.searchSimilarProperties(NUMBER_OF_BEDROOMS, @origin)
+
     assert_equal expected_list,list
   end
 

@@ -2,8 +2,7 @@ module PropertiesHelper
 end
 
 class Rentify
-  def searchSimilarProperties(number_of_rooms, latitude, longitude)
-    point = Point.new(latitude, longitude)
+  def searchSimilarProperties(number_of_rooms, point)
     initial_properties = @properties
     filtered_by_bedroom_properties = filter_by_number_of_rooms number_of_rooms, initial_properties
     filtered_final = filter_by_distance point, filtered_by_bedroom_properties
