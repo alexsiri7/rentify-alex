@@ -1,25 +1,23 @@
 require 'test_helper'
 
 class RentifyTest < ActiveSupport::TestCase
-  LAT = 0.0000
   LONG = 0.0000
-  NUMBER_OF_BEDROOMS = 2
-  LAT_3KM = LAT+0.027
   LONG_4KM = LONG+0.036
 
-  LAT_100M = LAT+0.001
-
+  LAT = 0.0000
+  LAT_3KM = LAT+0.027
+  LAT_LESS_1KM = LAT+0.001
   LAT_OVER_20KM = LAT+1
 
+  NUMBER_OF_BEDROOMS = 2
   SMALL_NUMBER_OF_BEDROOMS = NUMBER_OF_BEDROOMS+2
-
   LARGE_NUMBER_OF_BEDROOMS = NUMBER_OF_BEDROOMS-1
 
   def setup
-    @rentify = Rentify.new
     @origin = Point.new(LAT, LONG)
+    @rentify = SimilarPropertiesFinder.new(NUMBER_OF_BEDROOMS, @origin)
 
-    @close_property = Property.new({:name=>'Close Property',:number_of_rooms=>NUMBER_OF_BEDROOMS, :latitude=>LAT_100M, :longitude=>LONG});
+    @close_property = Property.new({:name=>'Close Property',:number_of_rooms=>NUMBER_OF_BEDROOMS, :latitude=>LAT_LESS_1KM, :longitude=>LONG});
     @further_property = Property.new({:name=>'Further Property',:number_of_rooms=>NUMBER_OF_BEDROOMS, :latitude=>LAT_3KM, :longitude=>LONG})
   end
 
@@ -28,7 +26,7 @@ class RentifyTest < ActiveSupport::TestCase
     expected_list = [@origin_property]
     @rentify.setPropertyList(expected_list)
 
-    list = @rentify.searchSimilarProperties(NUMBER_OF_BEDROOMS, @origin)
+    list = @rentify.run()
 
     assert_equal expected_list,list
   end
@@ -38,7 +36,7 @@ class RentifyTest < ActiveSupport::TestCase
     expected_list = [@close_property,@further_property]
     @rentify.setPropertyList(fixture_properties)
 
-    list = @rentify.searchSimilarProperties(NUMBER_OF_BEDROOMS, @origin)
+    list = @rentify.run()
 
     assert_equal expected_list,list
   end
@@ -48,30 +46,30 @@ class RentifyTest < ActiveSupport::TestCase
     expected_list = [@close_property,@further_property]
     @rentify.setPropertyList(fixture_properties)
 
-    list = @rentify.searchSimilarProperties(NUMBER_OF_BEDROOMS, @origin)
+    list = @rentify.run()
 
     assert_equal expected_list,list
   end
 
   def test_filter_out_if_lesser_number_of_bedrooms
-    @smaller_property = Property.new({:name=>'Smaller Property', :number_of_rooms=>LARGE_NUMBER_OF_BEDROOMS, :latitude=>LAT_100M, :longitude=>LONG});
+    @smaller_property = Property.new({:name=>'Smaller Property', :number_of_rooms=>LARGE_NUMBER_OF_BEDROOMS, :latitude=>LAT_LESS_1KM, :longitude=>LONG});
     fixture_properties = [@smaller_property]
     expected_list = []
     @rentify.setPropertyList(fixture_properties)
 
-    list = @rentify.searchSimilarProperties(NUMBER_OF_BEDROOMS, @origin)
+    list = @rentify.run()
 
     assert_equal expected_list,list
   end
 
   def test_filter_in_if_greater_number_of_bedrooms
-    @bigger_property = Property.new({:name=>'Bigger Property', :number_of_rooms=>SMALL_NUMBER_OF_BEDROOMS, :latitude=>LAT_100M, :longitude=>LONG});
+    @bigger_property = Property.new({:name=>'Bigger Property', :number_of_rooms=>SMALL_NUMBER_OF_BEDROOMS, :latitude=>LAT_LESS_1KM, :longitude=>LONG});
 
     fixture_properties = [@bigger_property]
     expected_list      = [@bigger_property]
     @rentify.setPropertyList(fixture_properties)
 
-    list = @rentify.searchSimilarProperties(NUMBER_OF_BEDROOMS, @origin)
+    list = @rentify.run()
 
     assert_equal expected_list,list
   end
@@ -82,7 +80,7 @@ class RentifyTest < ActiveSupport::TestCase
     expected_list      = []
     @rentify.setPropertyList(fixture_properties)
 
-    list = @rentify.searchSimilarProperties(NUMBER_OF_BEDROOMS, @origin)
+    list = @rentify.run()
 
     assert_equal expected_list,list
   end

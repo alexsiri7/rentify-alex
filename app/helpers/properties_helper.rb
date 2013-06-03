@@ -1,25 +1,29 @@
 module PropertiesHelper
 end
 
-class Rentify
-  def searchSimilarProperties(number_of_rooms, point)
-    initial_properties = @properties
-    filtered_by_bedroom_properties = filter_by_number_of_rooms number_of_rooms, initial_properties
-    filtered_final = filter_by_distance point, filtered_by_bedroom_properties
-    sort_by_distance(point, filtered_final)
+class SimilarPropertiesFinder
+  def initialize(number_of_rooms, point)
+    @number_of_rooms = number_of_rooms
+    @point = point
+  end
+  def run
+    filter_by_number_of_rooms
+    filter_by_distance
+    sort_by_distance
+    @properties
   end
   def setPropertyList(list)
     @properties = list
   end
   private
-  def filter_by_number_of_rooms(number_of_rooms, initial_properties)
-    initial_properties.select { |property| property.number_of_rooms >= number_of_rooms}
+  def filter_by_number_of_rooms
+    @properties.select! { |property| property.number_of_rooms >= @number_of_rooms}
   end
-  def filter_by_distance(point, initial_properties)
-    initial_properties.select { |property| point.distance_to(property) <= 20}
+  def filter_by_distance
+    @properties.select! { |property| @point.distance_to(property) <= 20}
   end
-  def sort_by_distance(point, initial_properties)
-    initial_properties.sort { |property1, property2| point.distance_to(property1.point) <=> point.distance_to(property2.point)}
+  def sort_by_distance
+    @properties.sort! { |property1, property2| @point.distance_to(property1.point) <=> @point.distance_to(property2.point)}
   end
 end
 
