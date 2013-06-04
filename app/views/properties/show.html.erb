@@ -1,3 +1,12 @@
+<style>
+  #map-canvas{
+      width: 500px;
+      height: 300px;
+  }
+</style>
+<script type="text/javascript"
+        src="https://maps.googleapis.com/maps/api/js?key=AIzaSyC98erAIndIuU-PBZE9mZRsdZ09DC000ZE&sensor=false">
+</script>
 <p id="notice"><%= notice %></p>
 
 <p>
@@ -9,7 +18,7 @@
   <b>Number of rooms:</b>
   <%= @property.number_of_rooms %>
 </p>
-
+<div id="map-canvas" ></div>
 <p>
   <b>Latitude:</b>
   <%= @property.latitude %>
@@ -28,3 +37,21 @@
 
 <br/>
 <%= link_to 'Back to search', :back %>
+<script>
+    function initialize() {
+        var myLatlng =new google.maps.LatLng(<%= @property.latitude %>, <%= @property.longitude %>);
+        var mapOptions = {
+            center: myLatlng,
+            zoom: 13,
+            mapTypeId: google.maps.MapTypeId.ROADMAP
+        };
+        var map = new google.maps.Map(document.getElementById("map-canvas"),
+                mapOptions);
+        var marker = new google.maps.Marker({
+            position: myLatlng,
+            map: map,
+            title:"<%= @property.name %>"
+        });
+    }
+    google.maps.event.addDomListener(window, 'load', initialize);
+</script>
