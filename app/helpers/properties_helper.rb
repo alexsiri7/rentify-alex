@@ -2,6 +2,7 @@ module PropertiesHelper
 end
 
 class SimilarPropertiesFinder
+  MAX_ALLOWED_DISTANCE = 20
 
   def initialize(number_of_rooms, point)
     @number_of_rooms = number_of_rooms
@@ -25,8 +26,9 @@ class SimilarPropertiesFinder
     @properties.select! { |property| property.number_of_rooms >= @number_of_rooms}
   end
 
+
   def filter_by_distance
-    @properties.select! { |property| @point.distance_to(property.location) <= 20}
+    @properties.select! { |property| @point.distance_to(property.location) <= MAX_ALLOWED_DISTANCE}
   end
 
   def sort_by_distance
