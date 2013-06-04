@@ -19,12 +19,12 @@
   <b>Longitude:</b>
   <%= @property.longitude %>
 </p>
+<% if @property.is_available %>
+    Hurry Up! This property is still available!
+<% else  %>
+    You just missed this one! But here are some others that might interest you
+    <%= render 'listing' %>
+<% end %>
 
-<p>
-  <b>Is available:</b>
-  <%= @property.is_available %>
-</p>
-
-
-<%= link_to 'Edit', edit_property_path(@property) %> |
-<%= link_to 'Back', properties_path %>
+<br/>
+<%= link_to 'Back to search', :back %>

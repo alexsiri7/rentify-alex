@@ -15,7 +15,7 @@ class RentifyTest < ActiveSupport::TestCase
 
   def setup
     @origin = Point.new(LAT, LONG)
-    @rentify = SimilarPropertiesFinder.new({:number_of_rooms=>NUMBER_OF_BEDROOMS, :point=>@origin})
+    @rentify = SimilarPropertiesFinder.new(NUMBER_OF_BEDROOMS, @origin)
 
     @close_property = Property.new({:name=>'Close Property',:number_of_rooms=>NUMBER_OF_BEDROOMS, :latitude=>LAT_LESS_1KM, :longitude=>LONG});
     @further_property = Property.new({:name=>'Further Property',:number_of_rooms=>NUMBER_OF_BEDROOMS, :latitude=>LAT_3KM, :longitude=>LONG})

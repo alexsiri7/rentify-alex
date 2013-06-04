@@ -13,13 +13,18 @@ class PropertiesController < ApplicationController
   def search_form
   end
 
-  def search
+  def do_search(number_of_rooms, point)
     all_properties = Property.all
-    finder = SimilarPropertiesFinder.new(params)
+    @origin =  point
+    finder = SimilarPropertiesFinder.new(number_of_rooms,@origin)
     finder.set_property_list(all_properties)
     @properties = finder.run()
-    @origin =  Point.new(params[:latitude].to_f,params[:longitude].to_f)
+  end
 
+  def search
+    number_of_rooms = params[:number_of_rooms].to_i
+    point  = Point.new(params[:latitude].to_f,params[:longitude].to_f)
+    do_search(number_of_rooms, point)
 
     respond_to do |format|
       format.html
@@ -31,6 +36,8 @@ class PropertiesController < ApplicationController
   # GET /properties/1.json
   def show
     @property = Property.find(params[:id])
+
+    do_search(@property.number_of_rooms, @property.location)
 
     respond_to do |format|
       format.html # show.html.erb

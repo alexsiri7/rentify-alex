@@ -3,9 +3,9 @@ end
 
 class SimilarPropertiesFinder
 
-  def initialize(params)
-    @number_of_rooms = params[:number_of_rooms].to_i
-    @point = Point.new(params[:latitude].to_f,params[:longitude].to_f)
+  def initialize(number_of_rooms, point)
+    @number_of_rooms = number_of_rooms
+    @point = point
   end
 
   def run
