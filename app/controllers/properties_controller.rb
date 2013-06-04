@@ -38,7 +38,7 @@ class PropertiesController < ApplicationController
     @property = Property.find(params[:id])
 
     do_search(@property.number_of_rooms, @property.location)
-
+    @properties.delete @property
     respond_to do |format|
       format.html # show.html.erb
       format.json { render json: @property }
