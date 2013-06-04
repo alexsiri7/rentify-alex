@@ -3,13 +3,13 @@
 one:
   name: MyString
   number_of_rooms: 1
-  latitude: 
-  longitude: 
+  latitude: 10
+  longitude:  10
   is_available: false
 
 two:
   name: MyString
   number_of_rooms: 1
-  latitude: 
-  longitude: 
+  latitude: 10
+  longitude: 10
   is_available: false
